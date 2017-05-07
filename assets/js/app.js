@@ -14,6 +14,7 @@ function model() {
                 id: 0,
                 title: "Alban Swesra",
                 location: new google.maps.LatLng(31.2141829, 29.9199581),
+                latlong: "31.2141829, 29.9199581",
 
 
                 category: "restaurant", // category for search fiel
@@ -25,6 +26,7 @@ function model() {
                 id: 1,
                 title: "Kbab hamdy ",
                 location: new google.maps.LatLng(31.2589367, 29.98013),
+                latlong: "31.2589367, 29.98013",
 
 
                 category: "restaurant",
@@ -36,6 +38,8 @@ function model() {
             {
                 id: 2,
                 title: "Abou shosha",
+                latlong: "31.2577232, 29.9813115",
+
                 location: new google.maps.LatLng(31.2577232, 29.9813115),
 
 
@@ -50,6 +54,7 @@ function model() {
                 title: "Home",
                 location: new google.maps.LatLng(31.2590232, 29.986692),
 
+                latlong: "31.2590232, 29.986692",
 
                 category: "home",
 
@@ -62,6 +67,7 @@ function model() {
                 title: "Talaat ",
                 location: new google.maps.LatLng(31.2026314, 29.8840698),
 
+                latlong: "31.2026314, 29.8840698",
 
                 category: "Juice Bar",
 
@@ -73,6 +79,7 @@ function model() {
                 title: "el falah",
                 location: new google.maps.LatLng(31.1968273, 29.9057599),
 
+                latlong: "31.1968273, 29.9057599",
 
                 category: "restaurant",
 
@@ -232,7 +239,7 @@ function createMarkers(places, map) {
 
         bounds.extend(place.location);
 
-
+        var pic = "https://maps.googleapis.com/maps/api/streetview?size=180x90&location=" + place.latlong + "&fov=75&heading=3&pitch=10 ";
         (function(marker, place) {
             google.maps.event.addListener(marker, "click", function(e) {
                 setTimeout(function() {
@@ -242,7 +249,12 @@ function createMarkers(places, map) {
                 map.setZoom(20);
                 map.setCenter(marker.getPosition());
                 //Wrap the content inside an HTML DIV in order to set height and width of InfoWindow.
-                infowindow.setContent("<div style = 'width:200px;min-height:40px'>" + place.title + "</div>");
+                infowindow.setContent('<img src=' + pic +
+                    '" alt="Street View Image of ' + place.title + '><br><br/><hr style="margin-bottom: 5px"><strong>' +
+                    place.title + '</strong><br><p>'
+
+
+                );
                 infowindow.open(map, marker);
             });
         })(marker, place);
