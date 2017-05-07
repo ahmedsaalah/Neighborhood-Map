@@ -111,7 +111,7 @@ function viewmodel(marker, map) {
 
 
 
-        createMarkers(arrayResults, map);
+        certainMarkers(arrayResults, map);
 
         return arrayResults;
 
@@ -120,6 +120,11 @@ function viewmodel(marker, map) {
     markersModel.clickHandler = function(data) {
 
         marker = markers[data.id]
+
+        marker.setAnimation(google.maps.Animation.BOUNCE);
+        setTimeout(function() {
+            marker.setAnimation(null);
+        }, 2100);
 
 
         map.setZoom(20);
@@ -158,6 +163,46 @@ function initMap(markersModel, map) {
 
 }
 
+function certainMarkers(places, map) {
+    // var map = new google.maps.Map(document.getElementById('map'), {
+    //     center: pyrmont,
+    //     zoom: 20
+    // });
+
+
+    var bounds = new google.maps.LatLngBounds();
+
+
+
+    var len = markers.length;
+    for (var i = 0; i < len; i++) {
+        markers[i].setMap(null);
+
+    }
+
+
+    var len = markers.length;
+    for (var i = 0; i < len; i++) {
+        if (i == places.length) {
+            break;
+        }
+
+        var place = places[i];
+
+        markers[place.id].setMap(map);
+
+
+
+        bounds.extend(place.location);
+
+    }
+    map.fitBounds(bounds);
+
+
+
+
+}
+
 
 function createMarkers(places, map) {
 
@@ -172,7 +217,6 @@ function createMarkers(places, map) {
     var bounds = new google.maps.LatLngBounds();
 
 
-    var placesList = document.getElementById('places');
 
     for (var i = 0; i < places.length; i++) {
         place = places[i];
@@ -191,6 +235,10 @@ function createMarkers(places, map) {
 
         (function(marker, place) {
             google.maps.event.addListener(marker, "click", function(e) {
+                setTimeout(function() {
+                    marker.setAnimation(null);
+                }, 2100);
+
                 map.setZoom(20);
                 map.setCenter(marker.getPosition());
                 //Wrap the content inside an HTML DIV in order to set height and width of InfoWindow.
