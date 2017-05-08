@@ -281,54 +281,32 @@ function createMarkers(places, map) {
         var pic = "https://maps.googleapis.com/maps/api/streetview?size=180x90&location=" + place.latlong + "&fov=75&heading=3&pitch=10 ";
 
 
-        var flickrUrl = 'https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=ab2be4f78cbc26981e3fe484038ad122&accuracy=16&' + place.latlon + '&format=json';
-        //  console.log(flickrUrl);
-        var photos;
-        $.ajax({
-            url: flickrUrl,
-            dataType: 'jsonp',
-            jsonp: 'jsoncallback',
-            success: function(data) {
-
-                var photo = data.photos.photo;
-                var flickrJSON = photo;
-                var number = Math.floor((Math.random() * 250) + 1);
-
-                var photos = 'https://farm' + flickrJSON[number].farm + '.staticflickr.com/' + flickrJSON[number].server + '/' + flickrJSON[number].id + '_' + flickrJSON[number].secret + '.jpg';
 
 
+        (function(marker, place) {
+            google.maps.event.addListener(marker, "click", function(e) {
+                marker.setAnimation(google.maps.Animation.BOUNCE);
+                setTimeout(function() {
+                    marker.setAnimation(null);
+                }, 2100);
+
+                map.setZoom(20);
+                map.setCenter(marker.getPosition());
+                console.log("hii" + photos);
+                //Wrap the content inside an HTML DIV in order to set height and width of InfoWindow.
 
 
-                (function(marker, place) {
-                    google.maps.event.addListener(marker, "click", function(e) {
-                        setTimeout(function() {
-                            marker.setAnimation(null);
-                        }, 2100);
-
-                        map.setZoom(20);
-                        map.setCenter(marker.getPosition());
-                        console.log("hii" + photos);
-                        //Wrap the content inside an HTML DIV in order to set height and width of InfoWindow.
+                infowindow.setContent('<img src="' + photos +
+                    '" alt="Street View Image of "' + place.location + '"><br><br/><hr style="margin-bottom: 5px"><strong>' +
+                    place.location + '</strong><br><p>'
 
 
-                        infowindow.setContent('<img src="' + photos +
-                            '" alt="Street View Image of "' + place.location + '"><br><br/><hr style="margin-bottom: 5px"><strong>' +
-                            place.location + '</strong><br><p>'
+                );
+                infowindow.open(map, marker);
+            });
+        })(marker, place);
 
 
-                        );
-                        infowindow.open(map, marker);
-                    });
-                })(marker, place);
-
-
-            },
-            error: function() {
-
-                alert("Sorry!Flickr Images Could Not Be Loaded.");
-
-            }
-        });
 
 
 
