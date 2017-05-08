@@ -292,13 +292,13 @@ function createMarkers(places, map) {
 
                 map.setZoom(20);
                 map.setCenter(marker.getPosition());
-                console.log("hii" + photos);
+
                 //Wrap the content inside an HTML DIV in order to set height and width of InfoWindow.
 
 
-                infowindow.setContent('<img src="' + photos +
-                    '" alt="Street View Image of "' + place.location + '"><br><br/><hr style="margin-bottom: 5px"><strong>' +
-                    place.location + '</strong><br><p>'
+                infowindow.setContent('<img src="' + pic +
+                    '" alt="Street View Image of "' + place.title + '"><br><br/><hr style="margin-bottom: 5px"><strong>' +
+                    place.title + '</strong><br><p>'
 
 
                 );
