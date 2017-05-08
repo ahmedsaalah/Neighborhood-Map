@@ -15,6 +15,7 @@ function model() {
                 title: "Alban Swesra",
                 location: new google.maps.LatLng(31.2141829, 29.9199581),
                 latlong: "31.2141829, 29.9199581",
+                latlon: "lat=31.2141829&lon=29.9199581",
 
 
                 category: "restaurant", // category for search fiel
@@ -28,6 +29,8 @@ function model() {
                 location: new google.maps.LatLng(31.2589367, 29.98013),
                 latlong: "31.2589367, 29.98013",
 
+                latlon: "lat=31.2589367&lon=29.98013",
+
 
                 category: "restaurant",
 
@@ -39,7 +42,7 @@ function model() {
                 id: 2,
                 title: "Abou shosha",
                 latlong: "31.2577232, 29.9813115",
-
+                latlon: "lat=31.2577232&lon=29.9813115",
                 location: new google.maps.LatLng(31.2577232, 29.9813115),
 
 
@@ -55,6 +58,7 @@ function model() {
                 location: new google.maps.LatLng(31.2590232, 29.986692),
 
                 latlong: "31.2590232, 29.986692",
+                latlon: "lat=31.2590232&lon=29.986692",
 
                 category: "home",
 
@@ -68,6 +72,7 @@ function model() {
                 location: new google.maps.LatLng(31.2026314, 29.8840698),
 
                 latlong: "31.2026314, 29.8840698",
+                latlon: "lat=31.2026314&lon=29.8840698",
 
                 category: "Juice Bar",
 
@@ -80,6 +85,7 @@ function model() {
                 location: new google.maps.LatLng(31.1968273, 29.9057599),
 
                 latlong: "31.1968273, 29.9057599",
+                latlon: "lat=31.1968273&lon=29.9057599",
 
                 category: "restaurant",
 
@@ -136,8 +142,41 @@ function viewmodel(marker, map) {
 
         map.setZoom(20);
         map.setCenter(marker.getPosition());
+        var flickrUrl = 'https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=ab2be4f78cbc26981e3fe484038ad122&accuracy=16&' + place.latlon + '&format=json';
+        //  console.log(flickrUrl);
+        var photos;
+        $.ajax({
+            url: flickrUrl,
+            dataType: 'jsonp',
+            jsonp: 'jsoncallback',
+            success: function(data) {
+
+                var photo = data.photos.photo;
+                var flickrJSON = photo;
+                var number = Math.floor((Math.random() * 250) + 1);
+
+                var photos = 'https://farm' + flickrJSON[number].farm + '.staticflickr.com/' + flickrJSON[number].server + '/' + flickrJSON[number].id + '_' + flickrJSON[number].secret + '.jpg';
+
+
+                infowindow.setContent('<img src="' + photos +
+                    '" alt="Street View Image of "' + place.location + '"><br/><hr style="margin-bottom: 5px"><strong>' +
+                    place.location + '</strong><br><p>');
+
+
+
+            },
+            error: function() {
+                infowindow.setContent("<div style = 'width:200px;min-height:40px'>" + data.title + "</div>");
+
+                alert("Sorry!Flickr Images Could Not Be Loaded.");
+
+            }
+        });
+
+
+
         //Wrap the content inside an HTML DIV in order to set height and width of InfoWindow.
-        infowindow.setContent("<div style = 'width:200px;min-height:40px'>" + data.title + "</div>");
+
         infowindow.open(map, marker);
     };
 
@@ -240,24 +279,59 @@ function createMarkers(places, map) {
         bounds.extend(place.location);
 
         var pic = "https://maps.googleapis.com/maps/api/streetview?size=180x90&location=" + place.latlong + "&fov=75&heading=3&pitch=10 ";
-        (function(marker, place) {
-            google.maps.event.addListener(marker, "click", function(e) {
-                setTimeout(function() {
-                    marker.setAnimation(null);
-                }, 2100);
-
-                map.setZoom(20);
-                map.setCenter(marker.getPosition());
-                //Wrap the content inside an HTML DIV in order to set height and width of InfoWindow.
-                infowindow.setContent('<img src=' + pic +
-                    '" alt="Street View Image of ' + place.title + '><br><br/><hr style="margin-bottom: 5px"><strong>' +
-                    place.title + '</strong><br><p>'
 
 
-                );
-                infowindow.open(map, marker);
-            });
-        })(marker, place);
+        var flickrUrl = 'https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=ab2be4f78cbc26981e3fe484038ad122&accuracy=16&' + place.latlon + '&format=json';
+        //  console.log(flickrUrl);
+        var photos;
+        $.ajax({
+            url: flickrUrl,
+            dataType: 'jsonp',
+            jsonp: 'jsoncallback',
+            success: function(data) {
+
+                var photo = data.photos.photo;
+                var flickrJSON = photo;
+                var number = Math.floor((Math.random() * 250) + 1);
+
+                var photos = 'https://farm' + flickrJSON[number].farm + '.staticflickr.com/' + flickrJSON[number].server + '/' + flickrJSON[number].id + '_' + flickrJSON[number].secret + '.jpg';
+
+
+
+
+                (function(marker, place) {
+                    google.maps.event.addListener(marker, "click", function(e) {
+                        setTimeout(function() {
+                            marker.setAnimation(null);
+                        }, 2100);
+
+                        map.setZoom(20);
+                        map.setCenter(marker.getPosition());
+                        console.log("hii" + photos);
+                        //Wrap the content inside an HTML DIV in order to set height and width of InfoWindow.
+
+
+                        infowindow.setContent('<img src="' + photos +
+                            '" alt="Street View Image of "' + place.location + '"><br><br/><hr style="margin-bottom: 5px"><strong>' +
+                            place.location + '</strong><br><p>'
+
+
+                        );
+                        infowindow.open(map, marker);
+                    });
+                })(marker, place);
+
+
+            },
+            error: function() {
+
+                alert("Sorry!Flickr Images Could Not Be Loaded.");
+
+            }
+        });
+
+
+
 
 
     }
