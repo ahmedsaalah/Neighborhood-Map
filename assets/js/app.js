@@ -278,12 +278,43 @@ function createMarkers(places, map) {
 
         bounds.extend(place.location);
 
-        var pic = "https://maps.googleapis.com/maps/api/streetview?size=180x90&location=" + place.latlong + "&fov=75&heading=3&pitch=10 ";
+        //   var pic = "https://maps.googleapis.com/maps/api/streetview?size=180x90&location=" + place.latlong + "&fov=75&heading=3&pitch=10 ";
+        var flickrUrl = 'https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=ab2be4f78cbc26981e3fe484038ad122&accuracy=16&' + place.latlon + '&format=json';
+        //  console.log(flickrUrl);
+        var photos;
+        $.ajax({
+            url: flickrUrl,
+            dataType: 'jsonp',
+            jsonp: 'jsoncallback',
+            success: function(data) {
+
+                var photo = data.photos.photo;
+                var flickrJSON = photo;
+                var number = Math.floor((Math.random() * 250) + 1);
+
+                photos = 'https://farm' + flickrJSON[number].farm + '.staticflickr.com/' + flickrJSON[number].server + '/' + flickrJSON[number].id + '_' + flickrJSON[number].secret + '.jpg';
+
+
+                infowindow.setContent('<img src="' + photos +
+                    '" alt="Street View Image of "' + place.location + '"><br/><hr style="margin-bottom: 5px"><strong>' +
+                    place.location + '</strong><br><p>');
+
+
+
+            },
+            error: function() {
+                infowindow.setContent("<div style = 'width:200px;min-height:40px'>" + data.title + "</div>");
+
+                alert("Sorry!Flickr Images Could Not Be Loaded.");
+
+            }
+        });
 
 
 
 
         (function(marker, place) {
+
             google.maps.event.addListener(marker, "click", function(e) {
                 marker.setAnimation(google.maps.Animation.BOUNCE);
                 setTimeout(function() {
@@ -296,7 +327,7 @@ function createMarkers(places, map) {
                 //Wrap the content inside an HTML DIV in order to set height and width of InfoWindow.
 
 
-                infowindow.setContent('<img src="' + pic +
+                infowindow.setContent('<img src="' + photos +
                     '" alt="Street View Image of "' + place.title + '"><br><br/><hr style="margin-bottom: 5px"><strong>' +
                     place.title + '</strong><br><p>'
 
