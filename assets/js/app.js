@@ -295,15 +295,9 @@ function createMarkers(places, map) {
                 photos = 'https://farm' + flickrJSON[number].farm + '.staticflickr.com/' + flickrJSON[number].server + '/' + flickrJSON[number].id + '_' + flickrJSON[number].secret + '.jpg';
 
 
-                infowindow.setContent('<img src="' + photos +
-                    '" alt="Street View Image of "' + place.location + '"><br/><hr style="margin-bottom: 5px"><strong>' +
-                    place.location + '</strong><br><p>');
-
-
 
             },
             error: function() {
-                infowindow.setContent("<div style = 'width:200px;min-height:40px'>" + data.title + "</div>");
 
                 alert("Sorry!Flickr Images Could Not Be Loaded.");
 
